@@ -2,7 +2,7 @@ package vsClient
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"net/url"
 
 	"github.com/vmware/govmomi"
@@ -22,8 +22,7 @@ func New(ctx context.Context, u url.URL, insecure bool) (*Client, error) {
 
 	gc, err := govmomi.NewClient(ctx, &u, insecure)
 	if err != nil {
-		log.Println(err)
-		return &clt, err
+		return &clt, fmt.Errorf("connecting to govmomi api failed: %w", err)
 	}
 	clt.Govmomi = gc
 
@@ -41,20 +40,19 @@ func (client *Client) MoTag(ctx context.Context, vm types.ManagedObjectReference
 	// Attach tag to VM.
 	err := m.AttachTag(ctx, tagID, vm)
 	if err != nil {
-		log.Fatal(err)
-		return err
+		return fmt.Errorf("attach tag to VM failed: %w", err)
 	}
 
 	return nil
 }
 
-func (clt *Client) Logout(ctx context.Context) {
+func (clt *Client) Logout(ctx context.Context) error {
 	err := clt.Govmomi.Logout(ctx)
 	if err != nil {
-		log.Printf("govmomi logout failed: %v", err)
+		return fmt.Errorf("govmomi api logout failed: %w", err)
 	}
 	err = clt.Rest.Logout(ctx)
 	if err != nil {
-		log.Printf("rest logout failed: %v", err)
+		return fmt.Errorf("rest api logout failed: %w", err)
 	}
 }
