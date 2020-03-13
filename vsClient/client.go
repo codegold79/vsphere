@@ -51,8 +51,11 @@ func (client *Client) Logout(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("govmomi api logout failed: %w", err)
 	}
+
 	err = client.Rest.Logout(ctx)
 	if err != nil {
 		return fmt.Errorf("rest api logout failed: %w", err)
 	}
+
+	return nil
 }
