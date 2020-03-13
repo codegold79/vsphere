@@ -46,12 +46,12 @@ func (client *Client) MoTag(ctx context.Context, vm types.ManagedObjectReference
 	return nil
 }
 
-func (clt *Client) Logout(ctx context.Context) error {
-	err := clt.Govmomi.Logout(ctx)
+func (client *Client) Logout(ctx context.Context) error {
+	err := client.Govmomi.Logout(ctx)
 	if err != nil {
 		return fmt.Errorf("govmomi api logout failed: %w", err)
 	}
-	err = clt.Rest.Logout(ctx)
+	err = client.Rest.Logout(ctx)
 	if err != nil {
 		return fmt.Errorf("rest api logout failed: %w", err)
 	}
