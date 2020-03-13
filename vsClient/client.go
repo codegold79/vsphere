@@ -27,7 +27,10 @@ func New(ctx context.Context, u url.URL, insecure bool) (*Client, error) {
 	clt.Govmomi = gc
 
 	clt.Rest = rest.NewClient(clt.Govmomi.Client)
-	clt.Rest.Login(ctx, u.User)
+	err = clt.Rest.Login(ctx, u.User)
+	if err != nil {
+		return &clt, fmt.Errorf("log in to rest api failed: %w", err)
+	}
 
 	return &clt, nil
 }
